@@ -4,7 +4,6 @@ import com.example.DG.bank.system.model.enums.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,6 +22,7 @@ public class Account {
     private long balance;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})

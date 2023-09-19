@@ -38,6 +38,7 @@ public class Customer {
     @Column(name = "date_of_birth")
     private Date date ;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
