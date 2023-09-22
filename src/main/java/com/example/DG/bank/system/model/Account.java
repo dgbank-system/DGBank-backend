@@ -22,7 +22,6 @@ public class Account {
     private long balance;
 
     @Column(name = "type")
-    @Enumerated(EnumType.STRING)
     private Type type;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})

@@ -16,11 +16,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "method")
     private Method method;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "operation")
     private Operation operation;
 
