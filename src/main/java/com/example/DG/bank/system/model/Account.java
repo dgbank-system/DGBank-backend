@@ -24,8 +24,8 @@ public class Account {
     @Column(name = "type")
     private Type type;
 
-    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})
-    @JoinColumn(name = "customer_id")
+    @ManyToOne(fetch = FetchType.LAZY , cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})
+    @JoinColumn(name = "customer_id",referencedColumnName = "id")
     private Customer customer;
 
     @OneToMany(mappedBy = "account" , cascade = CascadeType.ALL)

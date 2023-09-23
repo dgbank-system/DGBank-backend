@@ -3,6 +3,8 @@ package com.example.DG.bank.system.service;
 import com.example.DG.bank.system.Repo.AccountRepo;
 import com.example.DG.bank.system.exception.UserNotFoundException;
 import com.example.DG.bank.system.model.Account;
+import com.example.DG.bank.system.model.Customer;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import java.util.List;
 @Service
 @Transactional
 public class AccountServiceImpl implements AccountService{
+
+
     private AccountRepo accountRepo;
     @Autowired
     AccountServiceImpl(AccountRepo accountRepo)
@@ -41,4 +45,6 @@ public class AccountServiceImpl implements AccountService{
     public Account findAccountById(long id) {
         return accountRepo.findAccountById(id).orElseThrow(() -> new UserNotFoundException("Account By Id " + id + "is not Found"));
     }
+
+
 }
