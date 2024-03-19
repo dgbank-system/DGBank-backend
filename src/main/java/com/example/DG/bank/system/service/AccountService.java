@@ -15,6 +15,6 @@ public interface AccountService {
     void deleteAccount(long id);
 
     Account findAccountById(long id);
-
+    Boolean findAccount(long id);
 
 }

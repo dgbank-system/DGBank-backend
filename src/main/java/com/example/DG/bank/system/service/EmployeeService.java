@@ -16,4 +16,9 @@ public interface EmployeeService {
     Employee findEmployeeById(long id);
     Employee updateEmployeebyId(long id, Employee emp);
 
+    Employee findEmployeeByUsername(String username);
+    boolean register(String username);
+   boolean login(String username , String password);
+
+   long findTotalEmployees();
 }

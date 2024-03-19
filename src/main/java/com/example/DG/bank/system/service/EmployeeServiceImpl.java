@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public Employee findEmployeeById(long id) {
-        return employeeRepo.findEmployeeById(id).orElseThrow(() -> new UserNotFoundException("Employee By Id " + id + "is not Found"));
+        return employeeRepo.findEmployeeById(id).orElseThrow(() -> new UserNotFoundException("Employee By Id  " + id +  "  is not Found"));
     }
 
     @Override
@@ -55,5 +55,34 @@ public class EmployeeServiceImpl implements EmployeeService{
         existingEmp.setPhone(emp.getPhone());
         existingEmp.setAddress(emp.getAddress());
         return employeeRepo.save(existingEmp);
+    }
+
+    @Override
+    public Employee findEmployeeByUsername(String username) {
+        Employee emp = employeeRepo.findByUsername(username);
+        return emp;
+    }
+
+    @Override
+    public boolean register(String username) {
+        Employee emp = employeeRepo.findByUsername(username);
+        return emp == null;
+    }
+
+
+    public boolean login(String username, String password) {
+        Employee employee = employeeRepo.findByUsername(username);
+
+        if (employee != null) {
+            // Check if the provided password matches the stored password
+            return password.equals(employee.getPassword());
+        }
+
+        return false; // Employee not found
+    }
+
+    @Override
+    public long findTotalEmployees() {
+        return employeeRepo.count();
     }
 }

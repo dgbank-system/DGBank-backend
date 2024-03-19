@@ -5,15 +5,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.apache.tomcat.util.digester.Rules;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "customer")
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+@ToString
 public class Customer {
 
     @Id
@@ -44,6 +46,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
     private List<Account> accounts;
 
+
+    @OneToMany(mappedBy = "customer")
+    private List<Alert> alerts;
 
 
 }

@@ -13,6 +13,8 @@ public class Employee {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "username", unique = true)
+    private String username ;
     @Column(name = "name")
     private String name ;
     @Column(name = "address")
@@ -21,11 +23,13 @@ public class Employee {
     private int phone;
     @Column(name = "email")
     private String email ;
-    @OneToMany(mappedBy = "employee" , cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.DETACH,
-            CascadeType.REFRESH
-    })
-    private List<Account> accounts;
+    @Column(name = "password")
+    private String password;
+//    @OneToMany(mappedBy = "employee" , cascade = {
+//            CascadeType.PERSIST,
+//            CascadeType.MERGE,
+//            CascadeType.DETACH,
+//            CascadeType.REFRESH
+//    })
+//    private List<Account> accounts;
 }

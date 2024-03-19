@@ -43,7 +43,14 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public Account findAccountById(long id) {
-        return accountRepo.findAccountById(id).orElseThrow(() -> new UserNotFoundException("Account By Id " + id + "is not Found"));
+        return accountRepo.findAccountById(id).orElseThrow(() -> new UserNotFoundException("Account By Id  " + id +  " is not Found"));
+    }
+
+    @Override
+    public Boolean findAccount(long id) {
+        Account a = findAccountById(id);
+        if(a != null) return true;
+        return false;
     }
 
 

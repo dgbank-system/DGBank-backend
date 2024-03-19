@@ -1,20 +1,27 @@
 package com.example.DG.bank.system.controller;
 
+import com.example.DG.bank.system.dto.AccountRequestDTO;
 import com.example.DG.bank.system.model.Account;
 import com.example.DG.bank.system.model.Customer;
 import com.example.DG.bank.system.service.AccountService;
+import com.example.DG.bank.system.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/account")
 @CrossOrigin("*")
+@RequestMapping("/account")
 public class AccountController {
-
+    @Autowired
+    private CustomerService customerService;
     private AccountService accountService;
     @Autowired
     AccountController(AccountService accountService)
@@ -23,10 +30,13 @@ public class AccountController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Account>> getAllAccount()
+    public ResponseEntity<List<AccountRequestDTO>> getAllAccount()
     {
         List<Account> accounts = accountService.FindAllAccount();
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+        List<AccountRequestDTO> accountDTOs = accounts.stream()
+                .map(Account::toDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accountDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
@@ -37,10 +47,25 @@ public class AccountController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account)
+    public ResponseEntity<Map<String,Object>> addAccount(@RequestBody AccountRequestDTO accountRequest )
     {
-        Account newAccount = accountService.addAccount(account);
-        return new ResponseEntity<>(newAccount,HttpStatus.CREATED);
+        System.out.println("arrived");
+
+        Account newAccount = new Account();
+        newAccount.setBalance(accountRequest.getBalance());
+        newAccount.setType(accountRequest.getType());
+        Customer customer =  customerService.findCustomerById(accountRequest.getCustomerid());
+        newAccount.setCustomer(customer);
+        accountService.addAccount(newAccount);
+        Map<String,Object> response = new HashMap<>();
+        if(customer != null)
+        {
+            response.put("message", "Account " + newAccount.getId() + " added successfully to Customer " + customer.getFirstName());
+            response.put("account",newAccount);
+            return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        response.put("message","Customer not Exsit in the System");
+        return ResponseEntity.badRequest().body(response);
     }
 
     @PutMapping("/update")
