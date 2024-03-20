@@ -1,6 +1,7 @@
 package com.example.DG.bank.system.service;
 
 import com.example.DG.bank.system.Repo.AccountRepo;
+import com.example.DG.bank.system.dto.AccountRequestDTO;
 import com.example.DG.bank.system.exception.UserNotFoundException;
 import com.example.DG.bank.system.model.Account;
 import com.example.DG.bank.system.model.Customer;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class AccountServiceImpl implements AccountService{
@@ -27,8 +30,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public List<Account> FindAllAccount() {
-        return accountRepo.findAll();
+    public List<AccountRequestDTO> findAllAccountDTOs() {
+        List<Account> accounts = accountRepo.findAll();
+        return accounts.stream()
+                .map(Account::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

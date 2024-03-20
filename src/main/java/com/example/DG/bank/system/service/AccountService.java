@@ -1,14 +1,14 @@
 package com.example.DG.bank.system.service;
 
+import com.example.DG.bank.system.dto.AccountRequestDTO;
 import com.example.DG.bank.system.model.Account;
-import com.example.DG.bank.system.model.Customer;
 
 import java.util.List;
 
 public interface AccountService {
     Account addAccount(Account account);
 
-    List<Account> FindAllAccount();
+    List<AccountRequestDTO> findAllAccountDTOs();
 
     Account updateAccount(Account account);
 

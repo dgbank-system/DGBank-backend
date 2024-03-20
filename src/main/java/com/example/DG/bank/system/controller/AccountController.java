@@ -30,14 +30,11 @@ public class AccountController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<AccountRequestDTO>> getAllAccount()
-    {
-        List<Account> accounts = accountService.FindAllAccount();
-        List<AccountRequestDTO> accountDTOs = accounts.stream()
-                .map(Account::toDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(accountDTOs, HttpStatus.OK);
+    public ResponseEntity<List<AccountRequestDTO>> getAllAccount() {
+        List<AccountRequestDTO> accountDTOs = accountService.findAllAccountDTOs();
+        return ResponseEntity.ok(accountDTOs);
     }
+
 
     @GetMapping("/find/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable("id") long id)

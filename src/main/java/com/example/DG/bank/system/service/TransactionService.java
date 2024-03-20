@@ -24,7 +24,7 @@ public interface TransactionService {
 
     Transaction deposite(DepositRequest depositRequest);
 
-    Transaction withdraw(DepositRequest depositRequest);
+    Transaction withdraw(Long id , Long amount);
 
     Map<String, Long> getTransactionCountsByDate(String dateType);
 

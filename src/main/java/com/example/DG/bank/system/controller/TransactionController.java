@@ -86,8 +86,8 @@ public class TransactionController {
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<TransactionDTO> withdraw(@RequestBody DepositRequest depositRequest) {
-        Transaction res = transactionService.withdraw(depositRequest);
+    public ResponseEntity<TransactionDTO> withdraw(Long id , Long amount) {
+        Transaction res = transactionService.withdraw(id, amount);
 
         TransactionDTO transactionDTO = res.toDTO();
 

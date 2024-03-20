@@ -158,18 +158,18 @@ public class TransactonServiceImpl implements TransactionService{
 
 
     @Override
-    public Transaction withdraw(DepositRequest depositRequest) {
+    public Transaction withdraw(Long id , Long amount) {
         LocalDate currentDate = LocalDate.now();
         String desc = null;
         String status = null;
         Transaction trx = new Transaction();
-        Account account_A = accountService.findAccountById(depositRequest.getAccountA().getId());
+        Account account_A = accountService.findAccountById(id);
         if(account_A != null)
         {
-            if(account_A.getBalance() >= depositRequest.getAmount() )
+            if(account_A.getBalance() >= amount )
             {
                 status = "Successful";
-                account_A.setBalance(account_A.getBalance() - depositRequest.getAmount());
+                account_A.setBalance(account_A.getBalance() - amount);
                 desc = "Withdrawal successfully processed. Your requested amount has been deducted from your account.";
             }
             else{
@@ -184,7 +184,7 @@ public class TransactonServiceImpl implements TransactionService{
         }
         trx.setStatus(status);
         trx.setDescription(desc);
-        trx.setAmount(depositRequest.getAmount());
+        trx.setAmount(amount);
         trx.setType("withdraw");
         trx.setAccount1(account_A);
         trx.setAccount2(null);
