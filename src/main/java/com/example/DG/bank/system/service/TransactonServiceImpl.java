@@ -87,34 +87,34 @@ public class TransactonServiceImpl implements TransactionService{
     }
 
     @Override
-    public Transaction tranfer(TransferRequest transferRequest) {
+    public Transaction tranfer(Long id1 ,Long id2 , Long amount) {
         //accountA
         LocalDate currentDate = LocalDate.now();
         String desc = null;
         String status = null;
         Transaction trx = new Transaction();
-        Account account_A = accountService.findAccountById(transferRequest.getAccountA().getId());
-        Account account_B = accountService.findAccountById(transferRequest.getAccountB().getId());
+        Account account_A = accountService.findAccountById(id1);
+        Account account_B = accountService.findAccountById(id2);
 
         if (account_A.getBalance() <= 0) {
             desc = "this transaction cannot be done as your balance is :  " + account_A.getBalance();
             status = "Failed";
-        } else if (account_A.getBalance() < transferRequest.getAmount()) {
+        } else if (account_A.getBalance() < amount) {
             desc = "this transaction cannot be done as your balance is :  " + account_A.getBalance();
             status = "Failed";
         } else if (account_B != null) {
-            account_A.setBalance(account_A.getBalance() - transferRequest.getAmount());
-            account_B.setBalance(account_B.getBalance() + transferRequest.getAmount());
-            desc = "Transaction successfully completed from Account A (ID: " + account_A.getId() + ") to Account B (ID: " + account_B.getId() + ") by transferring an amount of " + transferRequest.getAmount() + ".";
+            account_A.setBalance(account_A.getBalance() - amount);
+            account_B.setBalance(account_B.getBalance() + amount);
+            desc = "Transaction successfully completed from Account A (ID: " + account_A.getId() + ") to Account B (ID: " + account_B.getId() + ") by transferring an amount of " + amount + ".";
             status = "Successful";
         } else if (account_B == null) {
-            account_A.setBalance(account_A.getBalance() - transferRequest.getAmount());
+            account_A.setBalance(account_A.getBalance() - amount);
             status = "Successful";
-            desc = "Transaction successfully completed from Account A (ID: " + account_A.getId() + ") to Account B (ID: " + account_B.getId() + ") by transferring an amount of " + transferRequest.getAmount() + ".";
+            desc = "Transaction successfully completed from Account A (ID: " + account_A.getId() + ") to Account B (ID: " + account_B.getId() + ") by transferring an amount of " + amount + ".";
         }
         trx.setStatus(status);
         trx.setDescription(desc);
-        trx.setAmount(transferRequest.getAmount());
+        trx.setAmount(amount);
         trx.setType("transfer");
         trx.setAccount1(account_A);
         trx.setAccount2(account_B);
@@ -127,16 +127,16 @@ public class TransactonServiceImpl implements TransactionService{
     }
 
     @Override
-    public Transaction deposite(DepositRequest depositRequest) {
+    public Transaction deposite(Long id , Long amount) {
         LocalDate currentDate = LocalDate.now();
         String desc = null;
         String status  = null;
         Transaction trx = new Transaction();
-        Account account_A = accountService.findAccountById(depositRequest.getAccountA().getId());
+        Account account_A = accountService.findAccountById(id);
         if(account_A != null)
         {
             status = "Successful";
-            account_A.setBalance(account_A.getBalance() + depositRequest.getAmount());
+            account_A.setBalance(account_A.getBalance() + amount);
 
             desc = "Deposit successfully completed. Your funds have been added to your account.";
         }
@@ -146,7 +146,7 @@ public class TransactonServiceImpl implements TransactionService{
         }
         trx.setStatus(status);
         trx.setDescription(desc);
-        trx.setAmount(depositRequest.getAmount());
+        trx.setAmount(amount);
         trx.setType("deposite");
         trx.setAccount1(account_A);
         trx.setAccount2(null);

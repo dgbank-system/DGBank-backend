@@ -69,17 +69,17 @@ public class TransactionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/transfer")
-    public ResponseEntity<TransactionDTO> transfer(@RequestBody TransferRequest transferRequest)
+    public ResponseEntity<TransactionDTO> transfer(Long id1 ,Long id2 , Long amount)
     {
-        Transaction trx= transactionService.tranfer(transferRequest);
+        Transaction trx= transactionService.tranfer(id1,id2,amount);
         TransactionDTO transactionDTO = trx.toDTO();
         return new ResponseEntity<TransactionDTO>(transactionDTO,HttpStatus.OK);
     }
 
     @PostMapping("/deposite")
-    public  ResponseEntity<TransactionDTO> deposite(@RequestBody DepositRequest depositRequest)
+    public  ResponseEntity<TransactionDTO> deposite(Long id , Long amount)
     {
-        Transaction trx = transactionService.deposite(depositRequest);
+        Transaction trx = transactionService.deposite(id , amount);
         TransactionDTO transactionDTO = trx.toDTO();
         return new ResponseEntity<TransactionDTO>(transactionDTO,HttpStatus.OK);
 

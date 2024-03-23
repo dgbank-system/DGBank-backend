@@ -20,9 +20,9 @@ public interface TransactionService {
 
     Transaction findTransactionById(long id);
    Transaction updateTransactionbyId(long id, Transaction transaction);
-    Transaction tranfer(TransferRequest transferRequest);
+    Transaction tranfer(Long id1 ,Long id2 , Long amount);
 
-    Transaction deposite(DepositRequest depositRequest);
+    Transaction deposite(Long id , Long amount);
 
     Transaction withdraw(Long id , Long amount);
 
