@@ -190,7 +190,7 @@ public class TransactonServiceImpl implements TransactionService{
         trx.setAccount2(null);
         trx.setDate(currentDate);
 
-         addTransaction(trx);
+        addTransaction(trx);
         return trx;
     }
     public Map<String, Long> getTransactionCountsByDate(String dateType) {

@@ -17,4 +17,6 @@ public interface AccountService {
     Account findAccountById(long id);
     Boolean findAccount(long id);
 
+    List<Long> findAllAccountIds();
+
 }

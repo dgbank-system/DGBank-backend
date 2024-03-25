@@ -15,9 +15,10 @@ public class TransactionDTO {
     private LocalDate date;
     private String status;
     private String description;
-    private Long accountId; // Represents the account_id
-    private Long anotherAccountId; // Represents the another_account field
+    private Long accountId;
+    private Long anotherAccountId;
     private List<Alert> alerts;
+    private Double balance;
     private Map<String, Integer> transactionCounts;
     // Constructors, getters, and setters
 }

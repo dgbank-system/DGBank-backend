@@ -55,8 +55,12 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public Boolean findAccount(long id) {
         Account a = findAccountById(id);
-        if(a != null) return true;
-        return false;
+        return a != null;
+    }
+
+    @Override
+    public List<Long> findAllAccountIds() {
+        return accountRepo.findAllIds();
     }
 
 

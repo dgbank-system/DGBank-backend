@@ -23,7 +23,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id ;
     @Column(name = "balance", nullable = false)
-    private long balance;
+    private Double balance;
 
     @Column(name = "type")
     private Type type;

@@ -49,18 +49,22 @@ public class Transaction {
    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH})
     @JoinColumn(name = "account1_id")
    @JsonIgnore
-//    @Column(name = "account_id_1")
     private Account account1;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH})
     @JoinColumn(name = "account2_id")
     @JsonIgnore
-//    @Column(name = "account_id_1")
     private Account account2;
+
+
+    @Column(name = "balance")
+    private Double balance;
 
 
     @ManyToMany(mappedBy = "transactions")
     private List<Alert> alerts= new ArrayList<>();
+
+
 
 
     public TransactionDTO toDTO() {
@@ -75,11 +79,11 @@ public class Transaction {
 
         if (this.account1 != null) {
             transactionDTO.setAccountId(this.account1.getId());
-
+            transactionDTO.setBalance(this.account1.getBalance());
         }
         if (this.account2 != null) {
             transactionDTO.setAnotherAccountId(this.account2.getId());
-
+            transactionDTO.setBalance(this.account2.getBalance());
         }
 //        if(this.alert != null)
 //        {

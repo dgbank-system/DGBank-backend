@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class AccountRequestDTO {
     private long id;
-    private long balance;
+    private Double balance;
     private Type type;
     private long customerid;
     private String customerFirstName;

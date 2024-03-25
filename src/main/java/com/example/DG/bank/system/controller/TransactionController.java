@@ -73,15 +73,15 @@ public class TransactionController {
     {
         Transaction trx= transactionService.tranfer(id1,id2,amount);
         TransactionDTO transactionDTO = trx.toDTO();
-        return new ResponseEntity<TransactionDTO>(transactionDTO,HttpStatus.OK);
+        return new ResponseEntity<>(transactionDTO,HttpStatus.OK);
     }
 
     @PostMapping("/deposite")
     public  ResponseEntity<TransactionDTO> deposite(Long id , Long amount)
     {
-        Transaction trx = transactionService.deposite(id , amount);
-        TransactionDTO transactionDTO = trx.toDTO();
-        return new ResponseEntity<TransactionDTO>(transactionDTO,HttpStatus.OK);
+        Transaction res = transactionService.deposite(id , amount);
+        TransactionDTO transactionDTO = res.toDTO();
+        return new ResponseEntity<>(transactionDTO,HttpStatus.OK);
 
     }
 
@@ -91,7 +91,7 @@ public class TransactionController {
 
         TransactionDTO transactionDTO = res.toDTO();
 
-        return new ResponseEntity<TransactionDTO>(transactionDTO,HttpStatus.CREATED);
+        return new ResponseEntity<>(transactionDTO,HttpStatus.CREATED);
     }
 
 //    @GetMapping("/transactionCountsByDate")
