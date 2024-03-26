@@ -57,8 +57,7 @@ public class Transaction {
     private Account account2;
 
 
-    @Column(name = "balance")
-    private Double balance;
+
 
 
     @ManyToMany(mappedBy = "transactions")
@@ -79,11 +78,11 @@ public class Transaction {
 
         if (this.account1 != null) {
             transactionDTO.setAccountId(this.account1.getId());
-            transactionDTO.setBalance(this.account1.getBalance());
+            transactionDTO.setBalanceA(this.account1.getBalance());
         }
         if (this.account2 != null) {
             transactionDTO.setAnotherAccountId(this.account2.getId());
-            transactionDTO.setBalance(this.account2.getBalance());
+            transactionDTO.setBalanceB(this.account2.getBalance());
         }
 //        if(this.alert != null)
 //        {

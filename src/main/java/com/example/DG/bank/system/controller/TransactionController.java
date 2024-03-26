@@ -94,11 +94,7 @@ public class TransactionController {
         return new ResponseEntity<>(transactionDTO,HttpStatus.CREATED);
     }
 
-//    @GetMapping("/transactionCountsByDate")
-//    public Map<String, Long> getTransactionCountsByDate() {
-//        return transactionService.getTransactionCountsByDate();
-//
-//    }
+
     @PostMapping("/selected-date")
     public ResponseEntity<Map<String, Long>> receiveSelectedDate(@RequestBody Dates selectedDate) {
         // Perform logic with the received selected date

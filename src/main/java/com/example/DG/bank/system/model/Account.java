@@ -1,6 +1,8 @@
 package com.example.DG.bank.system.model;
 
-import com.example.DG.bank.system.dto.AccountRequestDTO;
+
+import com.example.DG.bank.system.dto.AccountDtos.AccountRequestDTO;
+import com.example.DG.bank.system.dto.AccountDtos.AccountRequestTRXSDto;
 import com.example.DG.bank.system.model.enums.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -35,26 +37,32 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Alert> alerts;
-    public AccountRequestDTO toDTO() {
+
+
+
+    public AccountRequestDTO toAccountRequestDTO() {
         AccountRequestDTO accountDTO = new AccountRequestDTO();
         accountDTO.setId(this.id);
         accountDTO.setBalance(this.balance);
         accountDTO.setType(this.type);
-
         if (this.customer != null) {
-
-            accountDTO.setCustomerid(this.customer.getId());
+            accountDTO.setId(this.customer.getId());
             accountDTO.setCustomerFirstName(this.customer.getFirstName());
             accountDTO.setCustomerLastName(this.customer.getLastName());
         }
-
         return accountDTO;
     }
-//   @OneToMany(mappedBy = "account" , cascade = CascadeType.ALL)
-//   @JsonIgnore
-//   private List<Transaction> transactions;
 
-//    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})
-//    @JoinColumn(name = "employee_id")
-//    private Employee employee;
+    public AccountRequestTRXSDto toAccountDtoForTRXS() {
+        AccountRequestTRXSDto accountDtoForTRXS = new AccountRequestTRXSDto();
+        accountDtoForTRXS.setId(this.id);
+        accountDtoForTRXS.setBalance(this.balance);
+        if (this.customer != null) {
+            accountDtoForTRXS.setCustomerFirstName(this.customer.getFirstName());
+            accountDtoForTRXS.setCustomerLastName(this.customer.getLastName());
+        }
+        return accountDtoForTRXS;
+    }
+
+
 }

@@ -1,12 +1,13 @@
 package com.example.DG.bank.system.controller;
 
-import com.example.DG.bank.system.dto.AccountRequestDTO;
+
+import com.example.DG.bank.system.dto.AccountDtos.AccountRequestDTO;
+import com.example.DG.bank.system.dto.AccountDtos.AccountRequestTRXSDto;
 import com.example.DG.bank.system.model.Account;
 import com.example.DG.bank.system.model.Customer;
 import com.example.DG.bank.system.service.AccountService;
 import com.example.DG.bank.system.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("*")
@@ -31,14 +31,14 @@ public class AccountController {
 
     @GetMapping("/all")
     public ResponseEntity<List<AccountRequestDTO>> getAllAccount() {
-        List<AccountRequestDTO> accountDTOs = accountService.findAllAccountDTOs();
+        List<AccountRequestDTO> accountDTOs = accountService.findAllAccountDTOs(Account::toAccountRequestDTO);
         return ResponseEntity.ok(accountDTOs);
     }
 
-    @GetMapping("ids")
-    public ResponseEntity<List<Long>> getAllAccountIds() {
-        List<Long> accountIds = accountService.findAllAccountIds();
-        return ResponseEntity.ok(accountIds);
+    @GetMapping("/all/Trxs")
+    public ResponseEntity<List<AccountRequestTRXSDto>> getAccountsForTRXS() {
+        List<AccountRequestTRXSDto> accountDTOs = accountService.findAllAccountDTOs(Account::toAccountDtoForTRXS);
+        return ResponseEntity.ok(accountDTOs);
     }
 
 
@@ -46,7 +46,7 @@ public class AccountController {
     public ResponseEntity<AccountRequestDTO> getAccountById(@PathVariable("id") long id)
     {
         Account account = accountService.findAccountById(id);
-        AccountRequestDTO accountRequestDTO = account.toDTO();
+        AccountRequestDTO accountRequestDTO = account.toAccountRequestDTO();
         return  new ResponseEntity<>(accountRequestDTO,HttpStatus.OK);
     }
 

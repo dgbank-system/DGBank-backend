@@ -1,4 +1,4 @@
-package com.example.DG.bank.system.dto;
+package com.example.DG.bank.system.dto.AccountDtos;
 
 import com.example.DG.bank.system.model.Customer;
 import com.example.DG.bank.system.model.enums.Type;

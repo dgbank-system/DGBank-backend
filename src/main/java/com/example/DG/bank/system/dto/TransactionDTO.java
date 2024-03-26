@@ -18,7 +18,8 @@ public class TransactionDTO {
     private Long accountId;
     private Long anotherAccountId;
     private List<Alert> alerts;
-    private Double balance;
+    private Double balanceA;
+    private Double balanceB;
     private Map<String, Integer> transactionCounts;
     // Constructors, getters, and setters
 }

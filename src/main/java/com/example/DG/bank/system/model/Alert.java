@@ -1,8 +1,6 @@
 package com.example.DG.bank.system.model;
 
-import com.example.DG.bank.system.dto.AccountRequestDTO;
 import com.example.DG.bank.system.dto.AlertDTO;
-import com.example.DG.bank.system.dto.CustomerDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
