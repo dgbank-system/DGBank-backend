@@ -5,11 +5,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="2" author="AhmedHM">
+    <changeSet id="6" author="AhmedHM">
         <sql>
             <![CDATA[
-            ALTER TABLE transactions
-            ADD balance DECIMAL(10, 2) DEFAULT 0;
+             CREATE TABLE [AC_U1].testo (
+            id INT PRIMARY KEY,
+            name VARCHAR(50),
+            age INT,
+            email VARCHAR(100),
+            is_active BIT,
+            registration_date DATE
+        );
         ]]>
         </sql>
     </changeSet>

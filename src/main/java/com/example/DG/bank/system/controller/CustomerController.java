@@ -3,10 +3,6 @@ package com.example.DG.bank.system.controller;
 
 import com.example.DG.bank.system.Repo.AlertRepo;
 import com.example.DG.bank.system.dto.AlertDTO;
-import com.example.DG.bank.system.dto.DepositRequest;
-import com.example.DG.bank.system.dto.TransactionDTO;
-import com.example.DG.bank.system.dto.TransferRequest;
-import com.example.DG.bank.system.model.Account;
 import com.example.DG.bank.system.model.Alert;
 import com.example.DG.bank.system.model.Customer;
 import com.example.DG.bank.system.model.Transaction;
@@ -15,14 +11,11 @@ import com.example.DG.bank.system.service.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
