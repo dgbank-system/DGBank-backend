@@ -18,7 +18,7 @@ import java.util.Map;
 @CrossOrigin("*")
 public class RulesController {
 
-    private RuleService ruleService;
+    private final RuleService ruleService;
 
     @Autowired
     RulesController(RuleService ruleService)
@@ -53,6 +53,13 @@ public class RulesController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/applyRules")
+    public ResponseEntity<?> applyRules()
+    {
+         ruleService.applyAllRulesOnTransactions();
+         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/selected-date")
     public ResponseEntity<Map<String, Long>> receiveSelectedDate(@RequestBody Dates selectedDate) {
         // Perform logic with the received selected date
@@ -65,9 +72,5 @@ public class RulesController {
     }
 
 
-    @GetMapping("/counts")
-    public ResponseEntity<Long> getAlertsCount() {
-        long AlertsCounts = ruleService.findTotalAlerts(); // Assuming you have a method in CustomerService to get the count
-        return ResponseEntity.ok(AlertsCounts);
-    }
+
 }

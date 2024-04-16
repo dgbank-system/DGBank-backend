@@ -2,8 +2,8 @@ package com.example.DG.bank.system.controller;
 
 
 import com.example.DG.bank.system.Repo.AlertRepo;
-import com.example.DG.bank.system.dto.AlertDTO;
-import com.example.DG.bank.system.model.Alert;
+
+import com.example.DG.bank.system.dto.AlertProjection;
 import com.example.DG.bank.system.model.Customer;
 import com.example.DG.bank.system.model.Transaction;
 import com.example.DG.bank.system.service.CustomerService;
@@ -112,13 +112,9 @@ public class CustomerController {
     }
 
     @GetMapping("alert")
-    public ResponseEntity<List<AlertDTO>> getAlerts()
-    {
-         List<Alert> alerts = alertRepo.findAll();
-        List<AlertDTO> alertDto = alerts.stream()
-                .map(Alert::toDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(alertDto, HttpStatus.OK);
+    public ResponseEntity<List<AlertProjection>> getAlerts() {
+        List<AlertProjection> alerts = alertRepo.findAllBy();
+        return new ResponseEntity<>(alerts, HttpStatus.OK);
     }
 
     @GetMapping("/counts")

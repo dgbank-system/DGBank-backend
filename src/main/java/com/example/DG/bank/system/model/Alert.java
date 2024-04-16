@@ -1,6 +1,6 @@
 package com.example.DG.bank.system.model;
 
-import com.example.DG.bank.system.dto.AlertDTO;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,45 +28,28 @@ public class Alert {
     @Column(name = "date")
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id",referencedColumnName = "id")
     @JsonIgnore
     private Customer customer;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH , CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id",referencedColumnName = "id")
     @JsonIgnore
     private Account account;
 
-    @ManyToMany
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "alert_transaction",
             joinColumns = @JoinColumn(name = "alert_id"),
             inverseJoinColumns = @JoinColumn(name = "transaction_id")
     )
-    private List<Transaction> transactions;
+    private List<TransactionGroup> transactionGroups;
+
+
 
     @Column(name = "belongto")
     private long rule;
 
-    public AlertDTO toDTO() {
-        AlertDTO alertDTO = new AlertDTO();
-        alertDTO.setId(this.id);
-        alertDTO.setDescription(this.description);
-        alertDTO.setTrxs(this.transactions);
-        alertDTO.setRule(this.rule);
-        alertDTO.setDate(this.date);
 
-        if (this.customer != null) {
-            alertDTO.setCustomerFirstName(this.customer.getFirstName());
-            alertDTO.setCustomerLastName(this.customer.getLastName());
-
-        }
-        if(this.account != null)
-        {
-            alertDTO.setAccountId(this.account.getId());
-        }
-        return alertDTO;
-    }
 }

@@ -37,22 +37,7 @@ public class TransactonServiceImpl implements TransactionService{
     }
     @Override
     public Transaction addTransaction(Transaction transaction) {
-        Transaction savedTransaction = transactionRepo.save(transaction);
-
-
-//        long customerId = transaction.getAccount1().getCustomer().getId();
-       List<Rule>rules = ruleService.FindAllRule();
-        for(Rule rule : rules)
-        {
-
-                ruleService.ExecuteRule(rule,transaction);
-        }
-//        ruleService.ExecuteRule(transaction);
-//        ruleService.Rule1(customerId);
-//
-//        ruleService.Rule2(customerId);
-
-        return savedTransaction;
+        return transactionRepo.save(transaction);
     }
 
     @Override

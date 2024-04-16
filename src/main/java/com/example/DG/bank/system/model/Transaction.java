@@ -60,8 +60,7 @@ public class Transaction {
 
 
 
-    @ManyToMany(mappedBy = "transactions")
-    private List<Alert> alerts= new ArrayList<>();
+
 
 
 
@@ -74,8 +73,6 @@ public class Transaction {
         transactionDTO.setDate(this.date);
         transactionDTO.setStatus(this.status);
         transactionDTO.setDescription(this.description);
-        transactionDTO.setAlerts(this.alerts);
-
         if (this.account1 != null) {
             transactionDTO.setAccountId(this.account1.getId());
             transactionDTO.setBalanceA(this.account1.getBalance());

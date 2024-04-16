@@ -21,13 +21,12 @@ public interface RuleService {
 
     List<Transaction> getTransactionsByType(String type);
 
-    Boolean ExecuteRule(Rule rule,Transaction trx);
 
-    long findTotalAlerts();
+
 
     Map<String, Long> getAlertsCountsByDate(String dateType);
-//    Boolean Rule1(long id);
-//
-//    Boolean Rule2(long id);
+
+    public void applyAllRulesOnTransactions();
+
 
 }

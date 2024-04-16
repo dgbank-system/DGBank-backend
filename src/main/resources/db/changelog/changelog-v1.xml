@@ -5,20 +5,23 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="6" author="AhmedHM">
+    <changeSet id="10" author="AhmedHM">
         <sql>
             <![CDATA[
-             CREATE TABLE [AC_U1].testo (
-            id INT PRIMARY KEY,
-            name VARCHAR(50),
-            age INT,
-            email VARCHAR(100),
-            is_active BIT,
-            registration_date DATE
+       CREATE TABLE bankdb.dbo.transaction_group (
+            id bigint IDENTITY(1,1) NOT NULL,
+            account_id bigint NULL,
+            aggregated_amount bigint NOT NULL,
+            customer_id bigint NULL,
+            [scope] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+            transaction_type varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+            CONSTRAINT PK__transact__3213E83F69431626 PRIMARY KEY (id)
         );
         ]]>
         </sql>
     </changeSet>
+
+
 
 </databaseChangeLog>
 

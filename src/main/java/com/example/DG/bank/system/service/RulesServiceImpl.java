@@ -3,6 +3,7 @@ package com.example.DG.bank.system.service;
 
 import com.example.DG.bank.system.Repo.AlertRepo;
 import com.example.DG.bank.system.Repo.RuleRepo;
+import com.example.DG.bank.system.Repo.TransactionGroupRepo;
 import com.example.DG.bank.system.Repo.TransactionRepo;
 import com.example.DG.bank.system.model.*;
 import com.example.DG.bank.system.model.enums.RuleType;
@@ -35,8 +36,8 @@ public class RulesServiceImpl implements RuleService{
     @Autowired
     private AlertRepo alertRepo;
 
-//    @Autowired
-//    private TransactionService transactionService;
+    @Autowired
+    private TransactionGroupRepo transactionGroupRepo;
 
     @Autowired
     RulesServiceImpl(RuleRepo ruleRepo)
@@ -87,225 +88,14 @@ public class RulesServiceImpl implements RuleService{
         return transactionRepo.findAllByType(type);
     }
     private static char mapOperation(String operation) {
-        switch (operation) {
-            case "Less":
-                return '<';
-            case "Greater":
-                return '>';
-            case "Equal":
-                return '=';
-            default:
-                return '\0'; // Return null character or another special character for other cases
-        }
+        return switch (operation) {
+            case "Less" -> '<';
+            case "Greater" -> '>';
+            case "Equal" -> '=';
+            default -> '\0'; // Return null character or another special character for other cases
+        };
     }
 
-
-    @Override
-    public Boolean ExecuteRule(Rule rule,Transaction transaction)
-    {
-        boolean ruleisAchieved = false;
-
-        long id ;
-        String description;
-        List<Transaction> transactions;
-        String trxType;
-        String dynamicQuery;
-        String type ;
-
-        if(rule.getRuleType()== RuleType.Customer) {
-
-            id = transaction.getAccount1().getCustomer().getId();
-            description = "Customer " + id + " has achieved Rule: " + rule.getId();
-            trxType = String.valueOf(rule.getTransactionType());
-            dynamicQuery = "select " + rule.getAggregation() + "(t.amount) FROM Transaction t Where t.account1.customer.id = :id AND t.type = :type AND t.date = :dateui";
-            transactions = getTransactionsByCustomerId(id, trxType, rule.getDate());
-            type = "customer";
-        }
-        else {
-            id = transaction.getAccount1().getId();
-            description = "Account " + id + " has achieved Rule: " + rule.getId();
-            trxType = String.valueOf(rule.getTransactionType());
-            dynamicQuery = "select " + rule.getAggregation() + "(t.amount) FROM Transaction t Where t.account1.id = :id AND t.type = :type AND t.date = :dateui";
-            transactions = getTransactionsByAccountId(id,trxType, rule.getDate());
-            type = "account";
-        }
-            if (transactions.isEmpty()) {
-                // The query returned a single null element; exit the function
-                return false;
-            }
-
-
-                long result = executeDynamicQuery(dynamicQuery, id, trxType, rule.getDate());
-//                entityManager.close();
-
-
-                String operation = String.valueOf(rule.getOperation());
-
-                System.out.println("resOfQuery::\n"+result);
-                char mappedOperation = mapOperation(operation);
-
-                if (mappedOperation == '<') {
-                    ruleisAchieved = result < rule.getAmount();
-                } else if (mappedOperation == '>') {
-                    ruleisAchieved = result > rule.getAmount();
-                } else if (mappedOperation == '=') {
-                    ruleisAchieved = result == rule.getAmount();
-                }
-
-                System.out.println("the Status of the Rule: "+ruleisAchieved);
-                if(ruleisAchieved)
-                {
-                    Alert existingAlert = getExistingAlert(type,id, rule.getId());
-                    if (existingAlert != null && !transactions.isEmpty()) {
-                        existingAlert.setTransactions(transactions);
-                        alertRepo.save(existingAlert);
-                        return false;
-                    }
-                    System.out.println("the rule is achieved : )");
-                    CreateAndSaveAlert(type,id, transactions, description, rule.getId());
-                }
-                return true;
-
-    }
-
-    @Override
-    public long findTotalAlerts() {
-        return alertRepo.count();
-    }
-
-
-
-    private List<Transaction> getTransactionsByCustomerId(long customerId, String trxType, LocalDate date) {
-        String trxs = "SELECT t FROM Transaction t Where t.account1.customer.id = :id AND t.type = :type AND t.date = :dateui";
-        return entityManager.createQuery(trxs, Transaction.class)
-                .setParameter("id", customerId)
-                .setParameter("type", trxType.toString().toLowerCase())
-                .setParameter("dateui", date != null ? date : LocalDate.now())
-                .getResultList();
-    }
-    private List<Transaction> getTransactionsByAccountId(long accountId, String trxType, LocalDate date) {
-        String trxs = "SELECT t FROM Transaction t Where t.account1.id = :id AND t.type = :type AND t.date = :dateui";
-        return entityManager.createQuery(trxs, Transaction.class)
-                .setParameter("id", accountId)
-                .setParameter("type", trxType.toString().toLowerCase())
-                .setParameter("dateui", date != null ? date : LocalDate.now())
-                .getResultList();
-    }
-    private long executeDynamicQuery(String dynamicQuery, long id, String type, LocalDate date) {
-        return (long) entityManager.createQuery(dynamicQuery)
-                .setParameter("id", id)
-                .setParameter("type", type)
-                .setParameter("dateui", date != null ? date : LocalDate.now())
-                .getSingleResult();
-    }
-//    @Override
-//    public Boolean Rule1(long id) {
-//        Customer customer = customerService.findCustomerById(id);
-//        if (customer.getAppliedRules().contains("Rule1")) {
-//            Alert existingAlert = getExistingAlertForCustomer(customer, "Rule1");
-//            List<Transaction> withdrawTransactions = transactionRepo.findAllByAccount1_Customer_IdAndTypeAndDate(id, "withdraw",LocalDate.now());
-//            existingAlert.setTransactions(withdrawTransactions);
-//            alertRepo.save(existingAlert);
-//        }
-//        else
-//        {
-//            List<Transaction> withdrawTransactions = transactionRepo.findAllByAccount1_Customer_IdAndTypeAndDate(id, "withdraw",LocalDate.now());
-//            if (withdrawTransactions.size() >  4) {
-//                customer.getAppliedRules().add("Rule1");
-//                String description = "Customer " + id + " has exceeded the times (4) for 'withdraw' transactions.";
-//                CreateAndSaveAlert(customer, withdrawTransactions, description, "Rule1");
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public Boolean Rule2(long id) {
-//        Customer customer = customerService.findCustomerById(id);
-//
-//        // Check if Rule1 has already been applied
-//        if (customer.getRules().contains("Rule2")) {
-//            // Check if there's an existing alert for Rule1
-//            Alert existingAlert = getExistingAlertForCustomer(customer, "Rule2");
-//            List<Transaction> withdrawTransactions = transactionRepo.findAllByAccount1_Customer_IdAndTypeAndDate(id, "withdraw",LocalDate.now());
-//            existingAlert.setTransactions(withdrawTransactions);
-//            alertRepo.save(existingAlert);
-//        }
-//        else
-//        {
-//            long amount = transactionRepo.sumAmountByCustomerIdAndType(id,"withdraw",LocalDate.now());
-//            if(amount >= 1000)
-//            {
-//
-//                List<Transaction> withdrawTransactions = transactionRepo.findAllByAccount1_Customer_IdAndTypeAndDate(id, "withdraw",LocalDate.now());
-//                customer.getRules().add("Rule2");
-//                String description = "Customer " + id + " has exceeded the Amount (1000) for 'withdraw' transactions .";
-//                CreateAndSaveAlert(customer, withdrawTransactions, description,"Rule2");
-//                return true;
-//            }
-//
-//        }
-//        return false;
-//
-//    }
-
-
-    private void CreateAndSaveAlert(String type,long id,List<Transaction> trxs,String description,long ruleID)
-    {
-        LocalDate currentDate = LocalDate.now();
-        if ("customer".equalsIgnoreCase(type)) {
-            Customer customer = customerService.findCustomerById(id);
-            Alert alert = new Alert();
-            alert.setDescription(description);
-            alert.setRule(ruleID);
-            alert.setCustomer(customer);
-            alert.setTransactions(trxs);
-            alert.setDate(currentDate);
-
-            for (Transaction trx : trxs) {
-                trx.getAlerts().add(alert);
-            }
-            ;
-            alertRepo.save(alert);
-        } else if ("account".equalsIgnoreCase(type)) {
-            Account account = accountService.findAccountById(id);
-            Alert alert = new Alert();
-            alert.setDescription(description);
-            alert.setRule(ruleID);
-            alert.setAccount(account);
-            alert.setTransactions(trxs);
-
-            for (Transaction trx : trxs) {
-                trx.getAlerts().add(alert);
-            };
-            alertRepo.save(alert);
-        }
-    }
-
-
-private Alert getExistingAlert(String type,long id, long ruleID){
-    if ("customer".equalsIgnoreCase(type)) {
-        Customer customer = customerService.findCustomerById(id);
-        if (customer != null) {
-            for (Alert alert : customer.getAlerts()) {
-                if (alert.getRule() == ruleID) {
-                    return alert;
-                }
-            }
-        }
-    } else if ("account".equalsIgnoreCase(type)) {
-        Account account = accountService.findAccountById(id);
-        if (account != null) {
-            for (Alert alert : account.getAlerts()) {
-                if (alert.getRule() == ruleID) {
-                    return alert;
-                }
-            }
-        }
-    }
-    return null;
-    }
 
     @Override
     public Map<String, Long> getAlertsCountsByDate(String dateType) {
@@ -346,6 +136,165 @@ private Alert getExistingAlert(String type,long id, long ruleID){
 
 
         return sortedAlertCounts;
+    }
+
+    @Override
+    public void applyAllRulesOnTransactions() {
+        List<Rule> rules = FindAllRule();
+
+        for (Rule rule : rules) {
+            List<TransactionGroup> transactionGroups = groupTransactionsByRule(rule);
+
+            if (transactionGroups.isEmpty()) {
+                continue;
+            }
+
+            List<TransactionGroup> achievedGroups = filterAchievedRules(transactionGroups, rule);
+
+
+            for (TransactionGroup group : achievedGroups) {
+                System.out.println("achievedGroup: " + group);
+                createAlert(group, rule, achievedGroups);
+            }
+        }
+    }
+
+    private List<TransactionGroup> groupTransactionsByRule(Rule rule) {
+        if (rule.getRuleType() == RuleType.Customer) {
+            return groupTransactionsByCustomer(rule);
+        } else {
+            return groupTransactionsByAccount(rule);
+        }
+    }
+
+    private List<TransactionGroup> groupTransactionsByCustomer(Rule rule) {
+        String transactionType = String.valueOf(rule.getTransactionType());
+        String query = "SELECT t.account1.customer.id, " + rule.getAggregation() + "(t.amount) "
+                + "FROM Transaction t "
+                + "WHERE t.type = :transactionType "
+                + "GROUP BY t.account1.customer.id";
+
+        return executeQueryAndMapToTransactionGroup(query, transactionType, "customer");
+    }
+
+    private List<TransactionGroup> groupTransactionsByAccount(Rule rule) {
+        String transactionType = String.valueOf(rule.getTransactionType());
+        String query = "SELECT t.account1.id, " + rule.getAggregation() + "(t.amount) "
+                + "FROM Transaction t "
+                + "WHERE t.type = :transactionType "
+                + "GROUP BY t.account1.id";
+
+        return executeQueryAndMapToTransactionGroup(query, transactionType, "account");
+    }
+
+    private List<TransactionGroup> executeQueryAndMapToTransactionGroup(String query, String transactionType, String scope) {
+        List<TransactionGroup> transactionGroups = new ArrayList<>();
+
+        List<Object[]> results = entityManager.createQuery(query, Object[].class)
+                .setParameter("transactionType", transactionType)
+                .getResultList();
+
+        for (Object[] result : results) {
+            long id = (long) result[0];
+            long aggregatedAmount = (long) result[1];
+
+            TransactionGroup group = createTransactionGroup(scope, id, aggregatedAmount , transactionType);
+            transactionGroupRepo.save(group);
+            transactionGroups.add(group);
+        }
+
+        return transactionGroups;
+    }
+
+    private TransactionGroup createTransactionGroup(String scope, long id, long aggregatedAmount , String transactionType) {
+        if ("customer".equals(scope)) {
+            return new TransactionGroup("customer", id, 0L, aggregatedAmount, transactionType);
+        } else {
+            return new TransactionGroup("account", 0L, id, aggregatedAmount, transactionType);
+        }
+    }
+
+    private List<TransactionGroup> filterAchievedRules(List<TransactionGroup> transactionGroups, Rule rule) {
+        return transactionGroups.stream()
+                .filter(group -> checkRuleAchievement(group, rule))
+                .collect(Collectors.toList());
+    }
+    private boolean checkRuleAchievement(TransactionGroup group, Rule rule) {
+        long aggregatedAmount = group.getAggregatedAmount();
+        long ruleAmount = rule.getAmount();
+        char operation = mapOperation(String.valueOf(rule.getOperation()));
+
+        return switch (operation) {
+            case '<' -> aggregatedAmount < ruleAmount;
+            case '>' -> aggregatedAmount > ruleAmount;
+            case '=' -> aggregatedAmount == ruleAmount;
+            default -> false;
+        };
+    }
+
+
+    private void createAlert(TransactionGroup group, Rule rule, List<TransactionGroup> achievedGroups) {
+        String description;
+        LocalDate currentDate = LocalDate.now();
+
+        if ("customer".equals(group.getScope())) {
+            description = "Customer " + group.getCustomerId() + " has achieved Rule: " + rule.getId();
+        } else {
+            description = "Account " + group.getAccountId() + " has achieved Rule: " + rule.getId();
+        }
+
+        Alert existingAlert = getExistingAlert(group.getScope(), group.getCustomerId(), group.getAccountId(), rule.getId());
+
+        if (existingAlert != null) {
+            // Update existing alert with new description and aggregated amount
+            existingAlert.setDescription(description);
+            existingAlert.setTransactionGroups(achievedGroups);
+            alertRepo.save(existingAlert);
+        } else {
+            Alert newAlert = new Alert();
+            newAlert.setDescription(description);
+            newAlert.setRule(rule.getId());
+            newAlert.setTransactionGroups(achievedGroups);
+            newAlert.setDate(currentDate);
+
+            if ("customer".equalsIgnoreCase(group.getScope())) {
+                Customer customer = customerService.findCustomerById(group.getCustomerId());
+                newAlert.setCustomer(customer);
+                customer.getAlerts().add(newAlert);
+                customerService.addCustomer(customer);
+            } else if ("account".equalsIgnoreCase(group.getScope())) {
+                Account account = accountService.findAccountById(group.getAccountId());
+                newAlert.setAccount(account);
+                account.getAlerts().add(newAlert);
+                accountService.addAccount(account);
+            }
+
+            alertRepo.save(newAlert);
+        }
+    }
+
+
+    private Alert getExistingAlert(String type,long customerid,long accid, long ruleID){
+        if ("customer".equalsIgnoreCase(type)) {
+            Customer customer = customerService.findCustomerById(customerid);
+            if (customer != null) {
+                for (Alert alert : customer.getAlerts()) {
+                    if (alert.getRule() == ruleID) {
+                        return alert;
+                    }
+                }
+            }
+        } else if ("account".equalsIgnoreCase(type)) {
+            Account account = accountService.findAccountById(accid);
+            if (account != null) {
+                for (Alert alert : account.getAlerts()) {
+                    if (alert.getRule() == ruleID) {
+                        return alert;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }
